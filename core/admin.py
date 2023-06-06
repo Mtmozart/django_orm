@@ -13,6 +13,11 @@ class MontadoraAdmin(admin.ModelAdmin):
 
 @admin.register(Carro)
 class CarroAdmin(admin.ModelAdmin):
-    list_display = ('modelo', 'montadora','chassi', 'preco')
+    list_display = ('modelo', 'montadora','chassi', 'preco', 'get_motoristas')
+
+    def get_motoristas(self, obj):
+        return ', '.join([m.username for m in obj.motoristas.all()])
+
+    get_motoristas.short_description = 'Motoristas'
 
 

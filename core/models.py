@@ -21,7 +21,8 @@ class Montadora(models.Model):
     def __str__(self):
         return self.nome
 
-
+def set_default_montadora():
+    return Montadora.objects.get_or_create(nome = 'Padraozinha')[0]
 class Carro(models.Model):
     """
     #OneToOneField -- Cada carro poderá ter somente um chassi o chassi com um carro, não pode repetir.
@@ -29,9 +30,13 @@ class Carro(models.Model):
     #ForeingKey -- Cada carro terá uma montadora, mas a montadora pode ter vários carros.
     #ManyToMany - um carro pode ser dirigido por vários motoristas e o motorista pode dirigir vários carros.
     Não ao mesmo tempo. Pegação geral.
+
+    
+    montadora = models.ForeignKey(Montadora, on_delete=models.SET_DEFAULT, default=1) - esse set é para evitar que se apague o carro se apaga a montadora, 
+    definirá o valor para o parâmetro default
     """
     chassi = models.OneToOneField(Chassi, on_delete=models.CASCADE)
-    montadora = models.ForeignKey(Montadora, on_delete=models.CASCADE)
+    montadora = models.ForeignKey(Montadora, on_delete=models.SET(set_default_montadora))
     motoristas = models.ManyToManyField(get_user_model())
     modelo = models.CharField('Modelo', max_length=30,  help_text='Máximo 30 caracteres')
     preco = models.DecimalField('Preço', max_digits=8, decimal_places=2)
